@@ -8,15 +8,22 @@ import java.util.Collection;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece {
+public class ChessPiece
+{
+    PieceType type;
+    ChessGame.TeamColor color;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type)
+    {
+        this.type = type;
+        this.color = pieceColor;
     }
 
     /**
      * The various different chess piece options
      */
-    public enum PieceType {
+    public enum PieceType
+    {
         KING,
         QUEEN,
         BISHOP,
@@ -29,15 +36,18 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return color;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
+
+    public void setPieceColor(ChessGame.TeamColor color) { this.color = color; }
+    public void setTeamType(PieceType type) { this.type = type; }
 
     /**
      * Calculates all the positions a chess piece can move to
