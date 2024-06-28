@@ -16,7 +16,7 @@ public class ChessPosition
     {
         //TESTS ARE IN 1 BASE INDEX
         setRow(row);
-        setColumn(column);
+        setColumn(col);
     }
 
     public void setRow(int rowIn) { row = rowIn; }

@@ -49,6 +49,22 @@ public class ChessPiece
     public void setPieceColor(ChessGame.TeamColor color) { this.color = color; }
     public void setTeamType(PieceType type) { this.type = type; }
 
+    public static boolean isValidEndPosition(ChessPosition positionIn)
+    {
+        if (positionIn.getRow() >= 1 && positionIn.getRow() < 9 &&
+                positionIn.getColumn() >= 1 && positionIn.getColumn() < 9) return true;
+        return false;
+    }
+
+    public static boolean isAllyPosition(ChessBoard board, ChessPosition posistionIn, ChessGame.TeamColor color)
+    {
+        if (isValidEndPosition(posistionIn) && board.getPiece(posistionIn) != null)
+        {
+            if (board.getPiece(posistionIn).getTeamColor() == color) return true;
+        }
+        return false;
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -56,7 +72,9 @@ public class ChessPiece
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition)
+    {
+        if (type == PieceType.BISHOP) { return BishopMovesCalculator.pieceMoves(board, myPosition); }
+        return null;
     }
 }

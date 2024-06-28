@@ -33,7 +33,7 @@ public class ChessBoard
      */
     public void addPiece(ChessPosition position, ChessPiece piece)
     {
-        chessArray.get(position.getRow()-1).set(position.getColumn()-1, piece);;
+        chessArray.get(position.getRow()-1).set(position.getColumn()-1, piece);
     }
 
     public void removePiece(ChessPosition position)
