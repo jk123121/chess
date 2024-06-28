@@ -67,10 +67,12 @@ public class ChessMove
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove move = (ChessMove) o;
-        return Objects.equals(startPosition, move.startPosition) && Objects.equals(endPosition, move.endPosition);
+        return Objects.equals(startPosition, move.startPosition)
+                && Objects.equals(endPosition, move.endPosition)
+                && Objects.equals(promotionPiece, move.promotionPiece);
     }
 
-    public int hashCode() { return Objects.hash(startPosition, endPosition); }
+    public int hashCode() { return Objects.hash(startPosition, endPosition, promotionPiece); }
 
     public String toString()
     {
