@@ -8,7 +8,10 @@ import java.util.Collection;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessGame {
+public class ChessGame
+{
+    TeamColor turn;
+    ChessBoard board;
 
     public ChessGame() {
 
@@ -17,23 +20,20 @@ public class ChessGame {
     /**
      * @return Which team's turn it is
      */
-    public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
-    }
+    public TeamColor getTeamTurn() { return turn; }
 
     /**
      * Set's which teams turn it is
      *
      * @param team the team whose turn it is
      */
-    public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
-    }
+    public void setTeamTurn(TeamColor team) { turn = team; }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
-    public enum TeamColor {
+    public enum TeamColor
+    {
         WHITE,
         BLACK
     }
@@ -95,16 +95,12 @@ public class ChessGame {
      *
      * @param board the new board to use
      */
-    public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
-    }
+    public void setBoard(ChessBoard board) { this.board = board; }
 
     /**
      * Gets the current chessboard
      *
      * @return the chessboard
      */
-    public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
-    }
+    public ChessBoard getBoard() { return board; }
 }
