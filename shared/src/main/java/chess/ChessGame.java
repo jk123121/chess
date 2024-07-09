@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -47,7 +48,37 @@ public class ChessGame
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) return null;
+
+        ArrayList<ChessMove> pieceMoves = (ArrayList<ChessMove>) piece.pieceMoves(board, startPosition);
+        pieceMoves.removeIf((move) -> isInCheckPeek(move));
+
+        return pieceMoves;
+    }
+
+    private boolean isInCheckPeek(ChessMove move)
+    {
+        ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
+
+        ChessPiece startPiece = board.getChessArray().get(startPos.getRow() - 1).get(startPos.getColumn() - 1);
+        ChessPiece endPiece = board.getChessArray().get(endPos.getRow() - 1).get(endPos.getColumn() - 1);
+
+        //temp add piece at end position
+        board.getChessArray().get(endPos.getRow() - 1).set(endPos.getColumn() - 1,
+                new ChessPiece(startPiece.getTeamColor(), startPiece.getPieceType()));
+
+        //Temp remove piece at start position
+        board.getChessArray().get(startPos.getRow() - 1).set(startPos.getColumn() - 1, null);
+
+        boolean result = isInCheck(startPiece.getTeamColor());
+
+        //Revert changes to piece positions
+        board.getChessArray().get(startPos.getRow() - 1).set(startPos.getColumn() - 1, startPiece);
+        board.getChessArray().get(endPos.getRow() - 1).set(endPos.getColumn() - 1, endPiece);
+
+        return result;
     }
 
     /**
