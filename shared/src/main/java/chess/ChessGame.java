@@ -251,15 +251,17 @@ public class ChessGame
      */
     public boolean isInStalemate(TeamColor teamColor)
     {
+        if (isInCheck(teamColor) && isInCheckmate(teamColor)) { return false; }
         ArrayList<ChessMove> allMoves = new ArrayList<>();
-        ChessPosition position = null;
+        ChessPiece piece = null;
 
         //FIND TEAM'S POSITIONS
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                if (board.getChessArray().get(i).get(j) != null && board.getChessArray().get(i).get(j).getTeamColor() == teamColor)
+                piece = board.getChessArray().get(i).get(j);
+                if (piece != null && piece.getTeamColor() == teamColor)
                 {
                     allMoves.addAll(validMoves(new ChessPosition(i + 1, j + 1)));
                 }
