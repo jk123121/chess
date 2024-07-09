@@ -15,8 +15,11 @@ public class ChessGame
     TeamColor turn;
     ChessBoard board;
 
-    public ChessGame() {
-
+    public ChessGame()
+    {
+        board = new ChessBoard();
+        board.resetBoard();
+        turn = TeamColor.WHITE;
     }
 
     /**
@@ -91,6 +94,8 @@ public class ChessGame
     public void makeMove(ChessMove move) throws InvalidMoveException
     {
         ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null) { throw new InvalidMoveException(); }
+
         ArrayList<ChessMove> moveList = (ArrayList<ChessMove>) validMoves(move.getStartPosition());
         if (moveList.isEmpty())
         {
