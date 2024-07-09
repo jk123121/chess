@@ -252,6 +252,7 @@ public class ChessGame
     public boolean isInStalemate(TeamColor teamColor)
     {
         if (isInCheck(teamColor) && isInCheckmate(teamColor)) { return false; }
+
         ArrayList<ChessMove> allMoves = new ArrayList<>();
         ChessPiece piece = null;
 
