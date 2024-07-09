@@ -98,7 +98,53 @@ public class ChessGame
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ArrayList<ArrayList<ChessPiece>> chessArray = board.getChessArray();
+        ChessPosition kingPosition = null;
+
+        //FIND TEAM'S KING
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                ChessPiece piece = (ChessPiece) chessArray.get(i).get(j);
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor)
+                {
+                    kingPosition = new ChessPosition(i + 1, j + 1);
+                    break;
+                }
+            }
+        }
+
+        if (kingPosition == null) { return false; }
+
+        //FIND ENEMY'S MOVES
+        TeamColor enemyColor = teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+        ArrayList<ChessMove> enemyMoves = getTeamMoves(enemyColor);
+        for (ChessMove move : enemyMoves)
+        {
+            if ((kingPosition.getRow() == move.getEndPosition().getRow()) && (kingPosition.getColumn() == move.getEndPosition().getColumn()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private ArrayList<ChessMove> getTeamMoves(TeamColor teamColor)
+    {
+        ArrayList<ChessMove> teamMoves = new ArrayList<>();
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                ChessPiece piece = board.getChessArray().get(i).get(j);
+                if (piece != null && piece.getTeamColor() == teamColor)
+                {
+                    teamMoves.addAll(piece.pieceMoves(board, new ChessPosition(i + 1, j + 1)));
+                }
+            }
+        }
+        return teamMoves;
     }
 
     /**
