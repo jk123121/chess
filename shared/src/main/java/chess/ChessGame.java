@@ -47,7 +47,8 @@ public class ChessGame
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+    public Collection<ChessMove> validMoves(ChessPosition startPosition)
+    {
         ChessPiece piece = board.getPiece(startPosition);
         if (piece == null) return null;
 
@@ -87,8 +88,63 @@ public class ChessGame
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+    public void makeMove(ChessMove move) throws InvalidMoveException
+    {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        ArrayList<ChessMove> moveList = (ArrayList<ChessMove>) validMoves(move.getStartPosition());
+        if (moveList.isEmpty())
+        {
+            throw new InvalidMoveException();
+        }
+        boolean moveCheck = moveList.contains(move);
+        if (getTeamTurn() != piece.getTeamColor() || !moveCheck) throw new InvalidMoveException();
+        movePiece(move.getStartPosition(), move.getEndPosition());
+
+        //if pawn reaches end getPromotionPiece();
+        if (((piece.getTeamColor() == TeamColor.WHITE) &&
+                (piece.getPieceType() == ChessPiece.PieceType.PAWN) &&
+                (move.getEndPosition().getRow() == 8))
+                ||
+                ((piece.getTeamColor() == TeamColor.BLACK) &&
+                        (piece.getPieceType() == ChessPiece.PieceType.PAWN) &&
+                        (move.getEndPosition().getRow() == 1)))
+        {
+            board.removePiece(move.getEndPosition());
+            board.addPiece(move.getEndPosition(), createPiece(move.getPromotionPiece(), piece.getTeamColor()));
+        }
+
+        TeamColor enemyColor = getTeamTurn() == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+        setTeamTurn(enemyColor);
+    }
+
+    private ChessPiece createPiece(ChessPiece.PieceType type, TeamColor color)
+    {
+        return new ChessPiece(color, type);
+    }
+
+    public void movePiece(ChessPosition startPosition, ChessPosition endPosition)
+    {
+        ChessPiece startPiece = (ChessPiece) board.getChessArray().get(startPosition.getRow()-1).get(startPosition.getColumn()-1);
+        ChessPiece endPiece = (ChessPiece) board.getChessArray().get(endPosition.getRow()-1).get(endPosition.getColumn()-1);
+        ChessPiece.PieceType type = startPiece.getPieceType();
+
+        if (endPiece == null)
+        {
+            relocate(type, endPosition, startPiece);
+            board.removePiece(startPosition);
+        }
+        else if (endPiece.getTeamColor() != startPiece.getTeamColor())
+        {
+            board.removePiece(endPosition);
+            relocate(type, endPosition, startPiece);
+            board.removePiece(startPosition);
+        }
+        else System.out.println("Cannot move to that location");
+    }
+
+    public void relocate(ChessPiece.PieceType type, ChessPosition endPosition, ChessPiece startPiece)
+    {
+        board.addPiece(endPosition, new ChessPiece(startPiece.getTeamColor(), startPiece.getPieceType()));
     }
 
     /**
