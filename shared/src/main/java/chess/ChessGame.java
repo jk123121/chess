@@ -153,8 +153,31 @@ public class ChessGame
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
-    public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+    public boolean isInCheckmate(TeamColor teamColor)
+    {
+        //Is not in check to start
+        if (!isInCheck(teamColor))
+        {
+            //Iterate through all teamcolor's pieces &get piece's moves and iterate moving to each spot
+            ArrayList<ChessMove> teamMoves = getTeamMoves(teamColor);
+
+            ////check if any moves in list is in check
+            for (ChessMove move : teamMoves)
+            {
+                if (!isInCheckPeek(move)) { return false; }
+            }
+            return true;
+        }
+        //Iterate through all teamcolor's pieces &get piece's moves and iterate moving to each spot
+        ArrayList<ChessMove> teamMoves = getTeamMoves(teamColor);
+
+        ////check if any moves in list is in check
+        for (ChessMove move : teamMoves)
+        {
+            if (!isInCheckPeek(move)) { return false; }
+        }
+
+        return true;
     }
 
     /**
