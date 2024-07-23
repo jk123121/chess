@@ -5,7 +5,7 @@ import model.GameData;
 
 import java.util.ArrayList;
 
-public class MemoryGameDAO
+public class MemoryGameDAO implements GameDAO
 {
     ArrayList<GameData> games = new ArrayList<>();
 
