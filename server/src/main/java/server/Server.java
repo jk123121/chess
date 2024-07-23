@@ -2,9 +2,11 @@ package server;
 
 import spark.*;
 
-public class Server {
+public class Server
+{
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort)
+    {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -18,7 +20,8 @@ public class Server {
         return Spark.port();
     }
 
-    public void stop() {
+    public void stop()
+    {
         Spark.stop();
         Spark.awaitStop();
     }
