@@ -4,33 +4,13 @@ import model.User;
 
 import java.util.ArrayList;
 
-public class UserDAO
+public interface UserDAO
 {
-    ArrayList<User> users = new ArrayList<>();
+    public void insert(User user) throws DataAccessException;
 
-    public UserDAO() {}
+    public void delete() throws DataAccessException;
 
-    public void insert(User user) throws DataAccessException
-    {
-        users.add(user);
-    }
+    public void deleteAll() throws DataAccessException;
 
-    public void delete() throws DataAccessException
-    {
-
-    }
-
-    public void deleteAll() throws DataAccessException { users.clear(); }
-
-    public User find(String username) throws DataAccessException
-    {
-        for (User user : users)
-        {
-            if (user.getUsername().equals(username))
-            {
-                return user;
-            }
-        }
-        return null;
-    }
+    public User find(String username) throws DataAccessException;
 }
