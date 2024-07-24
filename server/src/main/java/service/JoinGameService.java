@@ -24,7 +24,7 @@ public class JoinGameService
                 return new JoinGameResult("Error: bad request");
             }
 
-            if (color == null || color.equals("")) { return new JoinGameResult(null); }
+            if (color == null || color.equals("")) { return new JoinGameResult("Error: bad request"); }
 
             if ((color.equals("WHITE") &&
                     gameDAO.getWhiteUsername(gameID) != null &&
