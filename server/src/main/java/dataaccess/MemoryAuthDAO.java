@@ -12,14 +12,6 @@ public class MemoryAuthDAO implements AuthDAO
 
     public void insert(Authtoken token) throws DataAccessException
     {
-        for (int i = 0; i < authTokens.size(); i++)
-        {
-            if (authTokens.get(i).getUsername().equals(token.getUsername()))
-            {
-                authTokens.set(i, token);
-                return;
-            }
-        }
         authTokens.add(token);
     }
 
