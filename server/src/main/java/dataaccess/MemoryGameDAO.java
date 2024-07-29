@@ -25,7 +25,6 @@ public class MemoryGameDAO implements GameDAO
 
     public void delete() throws DataAccessException
     {
-
     }
 
     public void deleteAll() throws DataAccessException { games.clear(); }
