@@ -53,6 +53,23 @@ public class DBUserDAO implements UserDAO
     @Override
     public User find(String username) throws DataAccessException
     {
-        return null;
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            conn.setCatalog("chess");
+
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.user WHERE username=?"))
+            {
+                preparedStatement.setString(1, username);
+
+                try (var result = preparedStatement.executeQuery())
+                {
+                    int id = result.getInt("id");
+                    return new User(result.getString("username"), result.getString("password"), result.getString("email"));
+                }
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
