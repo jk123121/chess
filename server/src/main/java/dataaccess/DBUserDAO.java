@@ -47,7 +47,16 @@ public class DBUserDAO implements UserDAO
     @Override
     public void deleteAll() throws DataAccessException
     {
-
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.user"))
+            {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

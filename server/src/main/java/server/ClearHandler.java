@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DBUserDAO;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -11,7 +12,7 @@ import spark.Response;
 
 public class ClearHandler
 {
-    public Object handle(Request req, Response res, MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
+    public Object handle(Request req, Response res, DBUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
     {
         Gson gson = new Gson();
         ClearResult result = new ClearService().clear(userDAO, authDAO, gameDAO);

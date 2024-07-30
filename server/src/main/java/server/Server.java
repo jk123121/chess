@@ -56,7 +56,7 @@ public class Server
         Spark.post("/user", (req, res) -> new RegisterHandler().handle(req, res, userDAO, authDAO));
         Spark.post("/session", (req, res) -> new LoginHandler().handle(req, res, userDAO, authDAO));
         Spark.delete("/session", (req, res) -> new LogoutHandler().handle(req, res, authDAO));
-        //Spark.delete("/db", (req, res) -> new ClearHandler().handle(req, res, userDAO, authDAO, gameDAO));
+        Spark.delete("/db", (req, res) -> new ClearHandler().handle(req, res, userDAO, authDAO, gameDAO));
         Spark.get("/game", (req, res) -> new ListGamesHandler().handle(req, res, authDAO, gameDAO));
         Spark.post("/game", (req, res) -> new CreateGameHandler().handle(req, res, authDAO, gameDAO));
         Spark.put("/game", (req, res) -> new JoinGameHandler().handle(req, res, authDAO, gameDAO));

@@ -1,14 +1,11 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import results.ClearResult;
 
 public class ClearService
 {
-    public ClearResult clear(MemoryUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
+    public ClearResult clear(DBUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
     {
         try
         {
