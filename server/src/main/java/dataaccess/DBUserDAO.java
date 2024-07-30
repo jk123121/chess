@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,6 +17,8 @@ public class DBUserDAO implements UserDAO
         String password = user.getPassword();
         String email = user.getEmail();
 
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
         try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
         {
             conn.setCatalog("chess");
@@ -23,7 +26,7 @@ public class DBUserDAO implements UserDAO
             try (var preparedStatement = conn.prepareStatement("INSERT INTO chess.user (username, password, email) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
             {
                 preparedStatement.setString(1, username);
-                preparedStatement.setString(2, password);
+                preparedStatement.setString(2, hashedPassword);
                 preparedStatement.setString(3, email);
 
                 preparedStatement.executeUpdate();
