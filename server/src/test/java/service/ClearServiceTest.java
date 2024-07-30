@@ -1,10 +1,7 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import model.Authtoken;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClearServiceTest
 {
-    private MemoryUserDAO uDAO = new MemoryUserDAO();
+    private DBUserDAO uDAO = new DBUserDAO();
     private MemoryAuthDAO aDAO = new MemoryAuthDAO();
     private MemoryGameDAO gDAO = new MemoryGameDAO();
     @BeforeEach
