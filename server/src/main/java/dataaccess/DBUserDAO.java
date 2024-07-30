@@ -63,8 +63,12 @@ public class DBUserDAO implements UserDAO
 
                 try (var result = preparedStatement.executeQuery())
                 {
-                    int id = result.getInt("id");
-                    return new User(result.getString("username"), result.getString("password"), result.getString("email"));
+                    if (result.next())
+                    {
+                        int id = result.getInt("id");
+                        return new User(result.getString("username"), result.getString("password"), result.getString("email"));
+                    }
+                    else { return null; }
                 }
             }
         } catch (SQLException e)

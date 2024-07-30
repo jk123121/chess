@@ -1,10 +1,12 @@
 package service;
 
+import dataaccess.DBUserDAO;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.Authtoken;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 import requests.LoginRequest;
 import results.LoginResult;
 
@@ -12,7 +14,7 @@ import java.util.UUID;
 
 public class LoginService
 {
-    public LoginResult login (LoginRequest request, MemoryUserDAO userDAO, MemoryAuthDAO authDAO) throws DataAccessException {
+    public LoginResult login (LoginRequest request, DBUserDAO userDAO, MemoryAuthDAO authDAO) throws DataAccessException {
         String username = request.getUsername();
         String password = request.getPassword();
         User user;
@@ -21,7 +23,7 @@ public class LoginService
             if (userDAO.find(username) != null)
             {
                 user = userDAO.find(username);
-                if (user.getPassword().equals(password))
+                if (BCrypt.checkpw(password, user.getPassword()))
                 {
                     UUID uuid = UUID.randomUUID();
                     authDAO.insert(new Authtoken(uuid.toString(), username));
