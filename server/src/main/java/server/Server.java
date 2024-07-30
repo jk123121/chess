@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.DBUserDAO;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -15,7 +16,7 @@ public class Server
     public int run(int desiredPort)
     {
         MemoryAuthDAO authDAO = new MemoryAuthDAO();
-        MemoryUserDAO userDAO = new MemoryUserDAO();
+        DBUserDAO userDAO = new DBUserDAO();
         MemoryGameDAO gameDAO = new MemoryGameDAO();
 
 
@@ -49,13 +50,13 @@ public class Server
         Spark.awaitStop();
     }
 
-    private static void createRoutes(MemoryAuthDAO authDAO, MemoryUserDAO userDAO, MemoryGameDAO gameDAO)
+    private static void createRoutes(MemoryAuthDAO authDAO, DBUserDAO userDAO, MemoryGameDAO gameDAO)
     {
         Spark.get("/", (req, res) -> null);
         Spark.post("/user", (req, res) -> new RegisterHandler().handle(req, res, userDAO, authDAO));
-        Spark.post("/session", (req, res) -> new LoginHandler().handle(req, res, userDAO, authDAO));
+        //Spark.post("/session", (req, res) -> new LoginHandler().handle(req, res, userDAO, authDAO));
         Spark.delete("/session", (req, res) -> new LogoutHandler().handle(req, res, authDAO));
-        Spark.delete("/db", (req, res) -> new ClearHandler().handle(req, res, userDAO, authDAO, gameDAO));
+        //Spark.delete("/db", (req, res) -> new ClearHandler().handle(req, res, userDAO, authDAO, gameDAO));
         Spark.get("/game", (req, res) -> new ListGamesHandler().handle(req, res, authDAO, gameDAO));
         Spark.post("/game", (req, res) -> new CreateGameHandler().handle(req, res, authDAO, gameDAO));
         Spark.put("/game", (req, res) -> new JoinGameHandler().handle(req, res, authDAO, gameDAO));
