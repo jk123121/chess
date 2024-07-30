@@ -73,15 +73,21 @@ public class Server
             var createUserTable = """
                     CREATE TABLE IF NOT EXISTS User
                     (
+                        id INT NOT NULL AUTO_INCREMENT,
                         username varchar(32) NOT NULL,
                         password varchar(32) NOT NULL,
-                        email varchar(32) NOT NULL
+                        email varchar(32) NOT NULL,
+                        PRIMARY KEY (id),
+                        INDEX (username)
                     );""";
             var createAuthTable = """
                     CREATE TABLE IF NOT EXISTS AuthToken
                     (
+                        id INT NOT NULL AUTO_INCREMENT,
                         Username varchar(32) NOT NULL,
-                        authToken varchar(32) NOT NULL
+                        authToken varchar(32) NOT NULL,
+                        PRIMARY KEY (id),
+                        INDEX (username)
                     );""";
             var createGameTable = """
                     CREATE TABLE IF NOT EXISTS GameData
