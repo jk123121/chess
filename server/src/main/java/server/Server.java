@@ -5,6 +5,10 @@ import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
 import spark.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+
 public class Server
 {
 
@@ -27,10 +31,11 @@ public class Server
             //This line initializes the server and can be removed once you have a functioning endpoint
             //Spark.init();
 
+            prepareTables();
             Spark.awaitInitialization();
             return Spark.port();
         }
-        catch(ArrayIndexOutOfBoundsException | NumberFormatException ex)
+        catch(ArrayIndexOutOfBoundsException | NumberFormatException | SQLException ex)
         {
             System.err.println("Specify the port number as a command line parameter");
         }
@@ -54,5 +59,57 @@ public class Server
         Spark.get("/game", (req, res) -> new ListGamesHandler().handle(req, res, authDAO, gameDAO));
         Spark.post("/game", (req, res) -> new CreateGameHandler().handle(req, res, authDAO, gameDAO));
         Spark.put("/game", (req, res) -> new JoinGameHandler().handle(req, res, authDAO, gameDAO));
+    }
+
+    private void prepareTables() throws SQLException
+    {
+        try (var conn = getConnection())
+        {
+            var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
+            createDbStatement.executeUpdate();
+
+            conn.setCatalog("chess");
+
+            var createUserTable = """
+                    CREATE TABLE IF NOT EXISTS User
+                    (
+                        username varchar(32) NOT NULL,
+                        password varchar(32) NOT NULL,
+                        email varchar(32) NOT NULL
+                    );""";
+            var createAuthTable = """
+                    CREATE TABLE IF NOT EXISTS AuthToken
+                    (
+                        Username varchar(32) NOT NULL,
+                        authToken varchar(32) NOT NULL
+                    );""";
+            var createGameTable = """
+                    CREATE TABLE IF NOT EXISTS GameData
+                    (
+                        gameID varchar(32) NOT NULL,
+                        whiteUsername varchar(32) NOT NULL,
+                        blackUsername varchar(32) NOT NULL,
+                        gameName varchar(32) NOT NULL,
+                        game varchar(32) NOT NULL
+                    );""";
+
+            try (var createTableStatement = conn.prepareStatement(createUserTable))
+            {
+                createTableStatement.executeUpdate();
+            }
+            try (var createTableStatement = conn.prepareStatement(createAuthTable))
+            {
+                createTableStatement.executeUpdate();
+            }
+            try (var createTableStatement = conn.prepareStatement(createGameTable))
+            {
+                createTableStatement.executeUpdate();
+            }
+        }
+    }
+
+    Connection getConnection() throws SQLException
+    {
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M");
     }
 }
