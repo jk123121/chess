@@ -111,6 +111,30 @@ public class DBGameDAO implements GameDAO
     @Override
     public ArrayList<GameData> listGames()
     {
-        return null;
+        ArrayList<GameData> gameList = new ArrayList<>();
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            conn.setCatalog("chess");
+
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.game"))
+            {
+                try (var result = preparedStatement.executeQuery())
+                {
+                    while (result.next())
+                    {
+                        Gson gson = new Gson();
+                        gameList.add(new GameData(result.getInt("gameID"),
+                                result.getString("whiteUsername"),
+                                result.getString("blackUsername"),
+                                result.getString("gameName"),
+                                gson.fromJson(result.getString("chessGame"), new ChessGame().getClass())));
+                    }
+                    return gameList;
+                }
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
