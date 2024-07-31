@@ -66,16 +66,7 @@ public class DBGameDAO implements GameDAO
     public String getWhiteUsername(int gameID) throws DataAccessException
     {
         GameData game = find(gameID);
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
-        {
-            conn.setCatalog("chess");
-
-
-        } catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
-        return "";
+        return game.getWhiteUsername();
     }
 
     @Override
@@ -87,7 +78,8 @@ public class DBGameDAO implements GameDAO
     @Override
     public String getBlackUsername(int gameID) throws DataAccessException
     {
-        return "";
+        GameData game = find(gameID);
+        return game.getBlackUsername();
     }
 
     @Override
