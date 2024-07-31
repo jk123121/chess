@@ -50,12 +50,31 @@ public class DBGameDAO implements GameDAO
     @Override
     public void deleteAll() throws DataAccessException
     {
-
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.authtoken"))
+            {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public String getWhiteUsername(int gameID) throws DataAccessException
     {
+        GameData game = find(gameID);
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            conn.setCatalog("chess");
+
+
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
         return "";
     }
 
