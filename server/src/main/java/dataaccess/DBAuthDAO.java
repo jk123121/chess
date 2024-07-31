@@ -80,7 +80,7 @@ public class DBAuthDAO implements AuthDAO
                     if (result.next())
                     {
                         //int id = result.getInt("id");
-                        return new Authtoken(result.getString("username"), result.getString("authtoken"));
+                        return new Authtoken(result.getString("authtoken"), result.getString("username"));
                     }
                 }
             }
@@ -117,6 +117,6 @@ public class DBAuthDAO implements AuthDAO
         {
             throw new RuntimeException(e);
         }
-        return "";
+        return null;
     }
 }
