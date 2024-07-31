@@ -90,11 +90,13 @@ public class Server
             var createGameTable = """
                     CREATE TABLE IF NOT EXISTS GameData
                     (
-                        gameID varchar(32) NOT NULL,
+                        gameID INT NOT NULL AUTO_INCREMENT,
                         whiteUsername varchar(32) NOT NULL,
                         blackUsername varchar(32) NOT NULL,
                         gameName varchar(32) NOT NULL,
-                        game varchar(32) NOT NULL
+                        game varchar(32) NOT NULL,
+                        PRIMARY KEY (gameID),
+                        INDEX (gameName)
                     );""";
 
             try (var createTableStatement = conn.prepareStatement(createUserTable))
