@@ -36,10 +36,9 @@ public class DBAuthDAO implements AuthDAO
             {
                 conn.setCatalog("chess");
 
-                try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.authtoken WHERE username=? AND authtoken=?"))
+                try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.authtoken WHERE authtoken=?"))
                 {
-                    preparedStatement.setString(1, username);
-                    preparedStatement.setString(2, token.getAuthToken());
+                    preparedStatement.setString(1, token.getAuthToken());
                     preparedStatement.executeUpdate();
                 }
             } catch (SQLException e)
@@ -72,7 +71,7 @@ public class DBAuthDAO implements AuthDAO
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.authtoken WHERE username=?"))
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.authtoken WHERE username=? LIMIT 1"))
             {
                 preparedStatement.setString(1, username);
 
