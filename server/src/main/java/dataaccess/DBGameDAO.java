@@ -1,8 +1,11 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DBGameDAO implements GameDAO
@@ -58,6 +61,31 @@ public class DBGameDAO implements GameDAO
     @Override
     public GameData find(int gameID) throws DataAccessException
     {
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            conn.setCatalog("chess");
+
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.game WHERE gameID=?"))
+            {
+                preparedStatement.setString(1, String.valueOf(gameID));
+
+                try (var result = preparedStatement.executeQuery())
+                {
+                    if (result.next())
+                    {
+                        Gson gson = new Gson();
+                        return new GameData(result.getInt("gameID"),
+                                            result.getString("whiteUsername"),
+                                            result.getString("blackUsername"),
+                                            result.getString("gameName"),
+                                            gson.fromJson(result.getString("chessGame"), new ChessGame().getClass()));
+                    }
+                }
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
