@@ -6,6 +6,7 @@ import model.GameData;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class DBGameDAO implements GameDAO
@@ -13,7 +14,25 @@ public class DBGameDAO implements GameDAO
     @Override
     public int addGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException
     {
-        return 0;
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            conn.setCatalog("chess");
+
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO chess.gamedata (whiteusername, blackusername, gamename, chesgame) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
+            {
+                preparedStatement.setString(1, whiteUsername);
+                preparedStatement.setString(2, blackUsername);
+                preparedStatement.setString(3, gameName);
+                preparedStatement.setString(4, new Gson().toJson(game));
+
+                preparedStatement.executeUpdate();
+
+                return preparedStatement.getGeneratedKeys().getInt("gameID");
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
