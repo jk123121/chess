@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import requests.JoinGameRequest;
@@ -11,7 +13,7 @@ import spark.Response;
 
 public class JoinGameHandler
 {
-    public Object handle(Request req, Response res, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
+    public Object handle(Request req, Response res, AuthDAO authDAO, GameDAO gameDAO)
     {
         Gson gson = new Gson();
         String authToken = req.headers("authorization");

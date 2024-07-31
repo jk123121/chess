@@ -1,9 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
+import dataaccess.*;
 import requests.CreateGameRequest;
 import results.CreateGameResult;
 import service.CreateGameService;
@@ -12,7 +10,7 @@ import spark.Response;
 
 public class CreateGameHandler
 {
-    public Object handle(Request req, Response res, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) throws DataAccessException {
+    public Object handle(Request req, Response res, AuthDAO authDAO, GameDAO gameDAO) throws DataAccessException {
         Gson gson = new Gson();
         CreateGameRequest request = gson.fromJson(req.body(), CreateGameRequest.class);
         String authToken = req.headers("authorization");

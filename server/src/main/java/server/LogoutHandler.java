@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.AuthDAO;
+import dataaccess.DBAuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import requests.LogoutRequest;
@@ -11,7 +13,7 @@ import spark.Response;
 
 public class LogoutHandler
 {
-    public Object handle(Request req, Response res, MemoryAuthDAO authDAO) throws DataAccessException
+    public Object handle(Request req, Response res, AuthDAO authDAO) throws DataAccessException
     {
         Gson gson = new Gson();
         String authToken = req.headers("authorization");

@@ -1,15 +1,13 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
+import dataaccess.*;
 import requests.CreateGameRequest;
 import results.CreateGameResult;
 
 public class CreateGameService
 {
-    public CreateGameResult createGame(CreateGameRequest request, String authToken, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
+    public CreateGameResult createGame(CreateGameRequest request, String authToken, AuthDAO authDAO, GameDAO gameDAO)
     {
         String gameName = request.getGameName();
 

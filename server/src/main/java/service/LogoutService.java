@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import requests.LogoutRequest;
@@ -7,7 +8,7 @@ import results.LogoutResult;
 
 public class LogoutService
 {
-    public LogoutResult logout(LogoutRequest request, MemoryAuthDAO authDAO) throws DataAccessException {
+    public LogoutResult logout(LogoutRequest request, AuthDAO authDAO) throws DataAccessException {
         String authtoken = request.getToken();
 
         try

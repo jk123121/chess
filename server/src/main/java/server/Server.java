@@ -1,9 +1,6 @@
 package server;
 
-import dataaccess.DBUserDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import spark.*;
 
 import java.sql.Connection;
@@ -15,9 +12,9 @@ public class Server
 
     public int run(int desiredPort)
     {
-        MemoryAuthDAO authDAO = new MemoryAuthDAO();
-        DBUserDAO userDAO = new DBUserDAO();
-        MemoryGameDAO gameDAO = new MemoryGameDAO();
+        AuthDAO authDAO = new DBAuthDAO();
+        UserDAO userDAO = new DBUserDAO();
+        GameDAO gameDAO = new MemoryGameDAO();
 
 
         try
@@ -50,7 +47,7 @@ public class Server
         Spark.awaitStop();
     }
 
-    private static void createRoutes(MemoryAuthDAO authDAO, DBUserDAO userDAO, MemoryGameDAO gameDAO)
+    private static void createRoutes(AuthDAO authDAO, UserDAO userDAO, GameDAO gameDAO)
     {
         Spark.get("/", (req, res) -> null);
         Spark.post("/user", (req, res) -> new RegisterHandler().handle(req, res, userDAO, authDAO));

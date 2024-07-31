@@ -5,7 +5,7 @@ import results.ClearResult;
 
 public class ClearService
 {
-    public ClearResult clear(DBUserDAO userDAO, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
+    public ClearResult clear(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO)
     {
         try
         {

@@ -1,13 +1,11 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
+import dataaccess.*;
 import results.ListGamesResult;
 
 public class ListGamesService
 {
-    public ListGamesResult listGames(String authToken, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
+    public ListGamesResult listGames(String authToken, AuthDAO authDAO, GameDAO gameDAO)
     {
         try
         {

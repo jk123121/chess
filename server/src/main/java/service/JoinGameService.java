@@ -1,14 +1,12 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
+import dataaccess.*;
 import requests.JoinGameRequest;
 import results.JoinGameResult;
 
 public class JoinGameService
 {
-    public JoinGameResult joinGame(JoinGameRequest request, String authToken, MemoryAuthDAO authDAO, MemoryGameDAO gameDAO)
+    public JoinGameResult joinGame(JoinGameRequest request, String authToken, AuthDAO authDAO, GameDAO gameDAO)
     {
         String color = request.getPlayerColor();
         int gameID = request.getGameID();

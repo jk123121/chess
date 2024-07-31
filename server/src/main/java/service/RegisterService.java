@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.DBUserDAO;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import model.Authtoken;
 import model.User;
 import requests.RegisterRequest;
@@ -13,7 +10,7 @@ import java.util.UUID;
 
 public class RegisterService
 {
-    public RegisterResult register(RegisterRequest request, DBUserDAO userDAO, MemoryAuthDAO authDAO)
+    public RegisterResult register(RegisterRequest request, UserDAO userDAO, AuthDAO authDAO)
     {
         String username = request.getUsername();
         String password = request.getPassword();

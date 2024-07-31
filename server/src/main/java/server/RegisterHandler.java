@@ -1,9 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DBUserDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import requests.RegisterRequest;
 import results.RegisterResult;
 import service.RegisterService;
@@ -12,7 +10,7 @@ import spark.Response;
 
 public class RegisterHandler
 {
-    public Object handle(Request req, Response res, DBUserDAO userDAO, MemoryAuthDAO authDAO)
+    public Object handle(Request req, Response res, UserDAO userDAO, AuthDAO authDAO)
     {
         Gson gson = new Gson();
         RegisterRequest request = gson.fromJson(req.body(), RegisterRequest.class);
