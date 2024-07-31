@@ -83,7 +83,7 @@ public class Server
                     (
                         id INT NOT NULL AUTO_INCREMENT,
                         Username varchar(32) NOT NULL,
-                        authToken varchar(32) NOT NULL,
+                        authToken varchar(36) NOT NULL,
                         PRIMARY KEY (id),
                         INDEX (username)
                     );""";
@@ -94,7 +94,7 @@ public class Server
                         whiteUsername varchar(32) NOT NULL,
                         blackUsername varchar(32) NOT NULL,
                         gameName varchar(32) NOT NULL,
-                        game varchar(32) NOT NULL,
+                        chessGame varchar(1500) NOT NULL,
                         PRIMARY KEY (gameID),
                         INDEX (gameName)
                     );""";
