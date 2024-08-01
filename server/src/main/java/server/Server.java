@@ -14,7 +14,7 @@ public class Server
     {
         AuthDAO authDAO = new DBAuthDAO();
         UserDAO userDAO = new DBUserDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
+        GameDAO gameDAO = new DBGameDAO();
 
 
         try
@@ -91,8 +91,8 @@ public class Server
                     CREATE TABLE IF NOT EXISTS GameData
                     (
                         gameID INT NOT NULL AUTO_INCREMENT,
-                        whiteUsername varchar(32) NOT NULL,
-                        blackUsername varchar(32) NOT NULL,
+                        whiteUsername varchar(32) NULL,
+                        blackUsername varchar(32) NULL,
                         gameName varchar(32) NOT NULL,
                         chessGame varchar(1500) NOT NULL,
                         PRIMARY KEY (gameID),
