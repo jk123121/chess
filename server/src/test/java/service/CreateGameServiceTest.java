@@ -14,11 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreateGameServiceTest
 {
-    private UserDAO uDAO = new DBUserDAO();
-    private AuthDAO aDAO = new DBAuthDAO();
-    private GameDAO gDAO = new DBGameDAO();
+    private UserDAO uDAO = new MemoryUserDAO();
+    private AuthDAO aDAO = new MemoryAuthDAO();
+    private GameDAO gDAO = new MemoryGameDAO();
     private CreateGameRequest request = new CreateGameRequest("demo");
-    int gameID;
 
     @BeforeEach
     void setUp() throws DataAccessException
@@ -29,14 +28,14 @@ public class CreateGameServiceTest
         aDAO.insert(new Authtoken("1234", "ash"));
         aDAO.insert(new Authtoken("1235", "notx"));
         //Add new game
-        gameID = gDAO.addGame("ash", "notx", "demoGame", new ChessGame());
+        gDAO.addGame("ash", "notx", "demoGame", new ChessGame());
     }
 
     @Test
     void positiveCreateGame()
     {
         CreateGameResult createGame = new CreateGameService().createGame(request, "1234", aDAO, gDAO);
-        assertEquals(gameID + 1, createGame.getGameID());
+        assertEquals(2, createGame.getGameID());
         assertEquals(null, createGame.getMessage());
     }
 

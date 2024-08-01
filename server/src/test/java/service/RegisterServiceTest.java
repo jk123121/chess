@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RegisterServiceTest
 {
-    private UserDAO uDAO = new DBUserDAO();
-    private AuthDAO aDAO = new DBAuthDAO();
-    private GameDAO gDAO = new DBGameDAO();
+    private UserDAO uDAO = new MemoryUserDAO();
+    private AuthDAO aDAO = new MemoryAuthDAO();
+    private GameDAO gDAO = new MemoryGameDAO();
     private RegisterRequest request = new RegisterRequest("noty", "notypassword", "noty@noty.com");
 
     @BeforeEach
