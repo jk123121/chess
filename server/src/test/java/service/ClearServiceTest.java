@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClearServiceTest
 {
-    private DBUserDAO uDAO = new DBUserDAO();
-    private MemoryAuthDAO aDAO = new MemoryAuthDAO();
-    private MemoryGameDAO gDAO = new MemoryGameDAO();
+    private UserDAO uDAO = new DBUserDAO();
+    private AuthDAO aDAO = new DBAuthDAO();
+    private GameDAO gDAO = new DBGameDAO();
     @BeforeEach
     public void setUp() throws DataAccessException
     {

@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LogoutServiceTest
 {
-    private DBUserDAO uDAO = new DBUserDAO();
-    private MemoryAuthDAO aDAO = new MemoryAuthDAO();
-    private MemoryGameDAO gDAO = new MemoryGameDAO();
+    private UserDAO uDAO = new DBUserDAO();
+    private AuthDAO aDAO = new DBAuthDAO();
+    private GameDAO gDAO = new DBGameDAO();
     private LogoutRequest request = new LogoutRequest("1234");
 
     @BeforeEach
