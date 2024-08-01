@@ -3,6 +3,8 @@ package server;
 import dataaccess.*;
 import spark.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
@@ -33,7 +35,7 @@ public class Server
             Spark.awaitInitialization();
             return Spark.port();
         }
-        catch(ArrayIndexOutOfBoundsException | NumberFormatException | SQLException ex)
+        catch(ArrayIndexOutOfBoundsException | NumberFormatException | SQLException | DataAccessException ex)
         {
             System.err.println("Specify the port number as a command line parameter");
         }
@@ -59,17 +61,12 @@ public class Server
         Spark.put("/game", (req, res) -> new JoinGameHandler().handle(req, res, authDAO, gameDAO));
     }
 
-    private void prepareTables() throws SQLException
-    {
+    private void prepareTables() throws SQLException, DataAccessException {
+        DatabaseManager.createDatabase();
         try (var conn = getConnection())
         {
-            var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
-            createDbStatement.executeUpdate();
-
-            conn.setCatalog("chess");
-
             var createUserTable = """
-                    CREATE TABLE IF NOT EXISTS User
+                    CREATE TABLE IF NOT EXISTS user
                     (
                         id INT NOT NULL AUTO_INCREMENT,
                         username varchar(32) NOT NULL,
@@ -79,22 +76,22 @@ public class Server
                         INDEX (username)
                     );""";
             var createAuthTable = """
-                    CREATE TABLE IF NOT EXISTS AuthToken
+                    CREATE TABLE IF NOT EXISTS authtoken
                     (
                         id INT NOT NULL AUTO_INCREMENT,
-                        Username varchar(32) NOT NULL,
+                        username varchar(32) NOT NULL,
                         authToken varchar(36) NOT NULL,
                         PRIMARY KEY (id),
                         INDEX (username)
                     );""";
             var createGameTable = """
-                    CREATE TABLE IF NOT EXISTS GameData
+                    CREATE TABLE IF NOT EXISTS gamedata
                     (
-                        gameID INT NOT NULL AUTO_INCREMENT,
-                        whiteUsername varchar(32) NULL,
-                        blackUsername varchar(32) NULL,
-                        gameName varchar(32) NOT NULL,
-                        chessGame varchar(1500) NOT NULL,
+                        gameid INT NOT NULL AUTO_INCREMENT,
+                        whiteusername varchar(32) NULL,
+                        blackusername varchar(32) NULL,
+                        gamename varchar(32) NOT NULL,
+                        chessgame varchar(1500) NOT NULL,
                         PRIMARY KEY (gameID),
                         INDEX (gameName)
                     );""";
@@ -117,7 +114,7 @@ public class Server
         }
     }
 
-    Connection getConnection() throws SQLException, DataAccessException
+    Connection getConnection() throws DataAccessException
     {
         return DatabaseManager.getConnection();
     }

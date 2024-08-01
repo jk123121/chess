@@ -16,11 +16,11 @@ public class DBGameDAO implements GameDAO
     @Override
     public int addGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO chess.gamedata (whiteusername, blackusername, gamename, chessgame) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS))
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO gamedata (whiteusername, blackusername, gamename, chessgame) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS))
             {
                 preparedStatement.setString(1, whiteUsername);
                 preparedStatement.setString(2, blackUsername);
@@ -85,7 +85,7 @@ public class DBGameDAO implements GameDAO
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET whiteUsername=? WHERE gameid=?"))
+            try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET whiteusername=? WHERE gameid=?"))
             {
                 preparedStatement.setString(1, username);
                 preparedStatement.setInt(2, game.getGameID());
@@ -113,7 +113,7 @@ public class DBGameDAO implements GameDAO
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET blackUsername=? WHERE gameid=?"))
+            try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET blackusername=? WHERE gameid=?"))
             {
                 preparedStatement.setString(1, username);
                 preparedStatement.setInt(2, game.getGameID());
@@ -133,7 +133,7 @@ public class DBGameDAO implements GameDAO
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata WHERE gameID=?"))
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata WHERE gameid=?"))
             {
                 preparedStatement.setString(1, String.valueOf(gameID));
 
@@ -172,11 +172,11 @@ public class DBGameDAO implements GameDAO
                     while (result.next())
                     {
                         Gson gson = new Gson();
-                        gameList.add(new GameData(result.getInt("gameID"),
-                                result.getString("whiteUsername"),
-                                result.getString("blackUsername"),
-                                result.getString("gameName"),
-                                gson.fromJson(result.getString("chessGame"), new ChessGame().getClass())));
+                        gameList.add(new GameData(result.getInt("gameid"),
+                                result.getString("whiteusername"),
+                                result.getString("blackusername"),
+                                result.getString("gamename"),
+                                gson.fromJson(result.getString("chessgame"), new ChessGame().getClass())));
                     }
                     return gameList;
                 }
