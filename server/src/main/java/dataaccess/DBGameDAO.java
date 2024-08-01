@@ -72,7 +72,22 @@ public class DBGameDAO implements GameDAO
     @Override
     public void setWhiteUsername(int gameID, String username) throws DataAccessException
     {
+        GameData game = find(gameID);
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            conn.setCatalog("chess");
 
+            try (var preparedStatement = conn.prepareStatement("UPDATE chess.authtoken SET whiteUsername=? WHERE id=?"))
+            {
+                preparedStatement.setString(1, game.getWhiteUsername());
+                preparedStatement.setInt(2, game.getGameID());
+
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -85,7 +100,22 @@ public class DBGameDAO implements GameDAO
     @Override
     public void setBlackUsername(int gameID, String username) throws DataAccessException
     {
+        GameData game = find(gameID);
+        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        {
+            conn.setCatalog("chess");
 
+            try (var preparedStatement = conn.prepareStatement("UPDATE chess.authtoken SET blackUsername=? WHERE id=?"))
+            {
+                preparedStatement.setString(1, game.getBlackUsername());
+                preparedStatement.setInt(2, game.getGameID());
+
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
