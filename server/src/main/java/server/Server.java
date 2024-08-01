@@ -114,8 +114,8 @@ public class Server
         }
     }
 
-    Connection getConnection() throws SQLException
+    Connection getConnection() throws SQLException, DataAccessException
     {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M");
+        return DatabaseManager.getConnection();
     }
 }
