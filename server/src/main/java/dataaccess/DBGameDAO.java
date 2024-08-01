@@ -58,9 +58,9 @@ public class DBGameDAO implements GameDAO
     @Override
     public void deleteAll() throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
-            try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.gamedata"))
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM gamedata"))
             {
                 preparedStatement.executeUpdate();
             }
@@ -81,11 +81,11 @@ public class DBGameDAO implements GameDAO
     public void setWhiteUsername(int gameID, String username) throws DataAccessException
     {
         GameData game = find(gameID);
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("UPDATE chess.gamedata SET whiteUsername=? WHERE gameid=?"))
+            try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET whiteUsername=? WHERE gameid=?"))
             {
                 preparedStatement.setString(1, username);
                 preparedStatement.setInt(2, game.getGameID());
@@ -109,11 +109,11 @@ public class DBGameDAO implements GameDAO
     public void setBlackUsername(int gameID, String username) throws DataAccessException
     {
         GameData game = find(gameID);
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("UPDATE chess.gamedata SET blackUsername=? WHERE gameid=?"))
+            try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET blackUsername=? WHERE gameid=?"))
             {
                 preparedStatement.setString(1, username);
                 preparedStatement.setInt(2, game.getGameID());
@@ -129,11 +129,11 @@ public class DBGameDAO implements GameDAO
     @Override
     public GameData find(int gameID) throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.gamedata WHERE gameID=?"))
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata WHERE gameID=?"))
             {
                 preparedStatement.setString(1, String.valueOf(gameID));
 
@@ -161,11 +161,11 @@ public class DBGameDAO implements GameDAO
     public ArrayList<GameData> listGames()
     {
         ArrayList<GameData> gameList = new ArrayList<>();
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.gamedata"))
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata"))
             {
                 try (var result = preparedStatement.executeQuery())
                 {
@@ -181,7 +181,7 @@ public class DBGameDAO implements GameDAO
                     return gameList;
                 }
             }
-        } catch (SQLException e)
+        } catch (SQLException | DataAccessException e)
         {
             throw new RuntimeException(e);
         }

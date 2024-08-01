@@ -11,10 +11,10 @@ public class DBAuthDAO implements AuthDAO
     @Override
     public void insert(Authtoken token) throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO chess.authtoken (username, authtoken) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS))
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO authtoken (username, authtoken) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS))
             {
                 preparedStatement.setString(1, token.getUsername());
                 preparedStatement.setString(2, token.getAuthToken());
@@ -32,11 +32,10 @@ public class DBAuthDAO implements AuthDAO
         Authtoken token = find(username);
         if (token != null)
         {
-            try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
-            {
+            try (var conn = DatabaseManager.getConnection())            {
                 conn.setCatalog("chess");
 
-                try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.authtoken WHERE authtoken=?"))
+                try (var preparedStatement = conn.prepareStatement("DELETE FROM authtoken WHERE authtoken=?"))
                 {
                     preparedStatement.setString(1, token.getAuthToken());
                     preparedStatement.executeUpdate();
@@ -51,10 +50,9 @@ public class DBAuthDAO implements AuthDAO
     @Override
     public void deleteAll() throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
-        {
+        try (var conn = DatabaseManager.getConnection())        {
             conn.setCatalog("chess");
-            try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.authtoken"))
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM authtoken"))
             {
                 preparedStatement.executeUpdate();
             }
@@ -67,11 +65,11 @@ public class DBAuthDAO implements AuthDAO
     @Override
     public Authtoken find(String username) throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.authtoken WHERE username=? LIMIT 1"))
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM authtoken WHERE username=? LIMIT 1"))
             {
                 preparedStatement.setString(1, username);
 
@@ -95,11 +93,11 @@ public class DBAuthDAO implements AuthDAO
     @Override
     public String getUser(String authtoken) throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.authtoken WHERE authtoken=?"))
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM authtoken WHERE authtoken=?"))
             {
                 preparedStatement.setString(1, authtoken);
 

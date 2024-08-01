@@ -19,11 +19,11 @@ public class DBUserDAO implements UserDAO
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO chess.user (username, password, email) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
             {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, hashedPassword);
@@ -47,9 +47,9 @@ public class DBUserDAO implements UserDAO
     @Override
     public void deleteAll() throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
-            try (var preparedStatement = conn.prepareStatement("DELETE FROM chess.user"))
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM user"))
             {
                 preparedStatement.executeUpdate();
             }
@@ -62,11 +62,11 @@ public class DBUserDAO implements UserDAO
     @Override
     public User find(String username) throws DataAccessException
     {
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "one2three!@!M"))
+        try (var conn = DatabaseManager.getConnection())
         {
             conn.setCatalog("chess");
 
-            try (var preparedStatement = conn.prepareStatement("SELECT * FROM chess.user WHERE username=?"))
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM user WHERE username=?"))
             {
                 preparedStatement.setString(1, username);
 
