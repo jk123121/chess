@@ -111,6 +111,9 @@ public class Server
             {
                 createTableStatement.executeUpdate();
             }
+        } catch (DataAccessException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
