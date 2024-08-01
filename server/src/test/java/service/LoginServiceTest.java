@@ -7,6 +7,7 @@ import model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import requests.LoginRequest;
 import results.LoginResult;
 
@@ -22,8 +23,8 @@ public class LoginServiceTest
     @BeforeEach
     void setUp() throws DataAccessException
     {
-        uDAO.insert(new User("ash", "pika", "chu"));
-        uDAO.insert(new User("notx", "pika", "chu"));
+        uDAO.insert(new User("ash", BCrypt.hashpw("pika", BCrypt.gensalt()), "chu"));
+        uDAO.insert(new User("notx", BCrypt.hashpw("pika", BCrypt.gensalt()), "chu"));
         //Add that user to authtokens + generate authtoken
         aDAO.insert(new Authtoken("1234", "ash"));
         aDAO.insert(new Authtoken("1235", "notx"));
