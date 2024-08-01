@@ -18,8 +18,6 @@ public class DBGameDAO implements GameDAO
     {
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("INSERT INTO gamedata (whiteusername, blackusername, gamename, chessgame) VALUES (?, ?, ?, ?)", RETURN_GENERATED_KEYS))
             {
                 preparedStatement.setString(1, whiteUsername);
@@ -83,8 +81,6 @@ public class DBGameDAO implements GameDAO
         GameData game = find(gameID);
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET whiteusername=? WHERE gameid=?"))
             {
                 preparedStatement.setString(1, username);
@@ -111,8 +107,6 @@ public class DBGameDAO implements GameDAO
         GameData game = find(gameID);
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("UPDATE gamedata SET blackusername=? WHERE gameid=?"))
             {
                 preparedStatement.setString(1, username);
@@ -131,8 +125,6 @@ public class DBGameDAO implements GameDAO
     {
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata WHERE gameid=?"))
             {
                 preparedStatement.setString(1, String.valueOf(gameID));
@@ -163,8 +155,6 @@ public class DBGameDAO implements GameDAO
         ArrayList<GameData> gameList = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM gamedata"))
             {
                 try (var result = preparedStatement.executeQuery())

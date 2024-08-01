@@ -21,8 +21,6 @@ public class DBUserDAO implements UserDAO
 
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS))
             {
                 preparedStatement.setString(1, username);
@@ -64,8 +62,6 @@ public class DBUserDAO implements UserDAO
     {
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM user WHERE username=?"))
             {
                 preparedStatement.setString(1, username);

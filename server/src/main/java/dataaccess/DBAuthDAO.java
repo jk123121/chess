@@ -13,7 +13,6 @@ public class DBAuthDAO implements AuthDAO
     {
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
             try (var preparedStatement = conn.prepareStatement("INSERT INTO authtoken (username, authtoken) VALUES(?, ?)", Statement.RETURN_GENERATED_KEYS))
             {
                 preparedStatement.setString(1, token.getUsername());
@@ -32,9 +31,8 @@ public class DBAuthDAO implements AuthDAO
         Authtoken token = find(username);
         if (token != null)
         {
-            try (var conn = DatabaseManager.getConnection())            {
-                conn.setCatalog("chess");
-
+            try (var conn = DatabaseManager.getConnection())
+            {
                 try (var preparedStatement = conn.prepareStatement("DELETE FROM authtoken WHERE authtoken=?"))
                 {
                     preparedStatement.setString(1, token.getAuthToken());
@@ -50,8 +48,8 @@ public class DBAuthDAO implements AuthDAO
     @Override
     public void deleteAll() throws DataAccessException
     {
-        try (var conn = DatabaseManager.getConnection())        {
-            conn.setCatalog("chess");
+        try (var conn = DatabaseManager.getConnection())
+        {
             try (var preparedStatement = conn.prepareStatement("DELETE FROM authtoken"))
             {
                 preparedStatement.executeUpdate();
@@ -67,8 +65,6 @@ public class DBAuthDAO implements AuthDAO
     {
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM authtoken WHERE username=? LIMIT 1"))
             {
                 preparedStatement.setString(1, username);
@@ -95,8 +91,6 @@ public class DBAuthDAO implements AuthDAO
     {
         try (var conn = DatabaseManager.getConnection())
         {
-            conn.setCatalog("chess");
-
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM authtoken WHERE authtoken=?"))
             {
                 preparedStatement.setString(1, authtoken);
