@@ -16,7 +16,6 @@ public class DBUserDAO implements UserDAO
         String username = user.getUsername();
         String password = user.getPassword();
         String email = user.getEmail();
-
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         try (var conn = DatabaseManager.getConnection())
