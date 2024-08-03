@@ -1,14 +1,51 @@
+package facade;
+
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
+import model.User;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class ServerFacade
 {
     private final String serverUrl;
 
     public ServerFacade(String serverUrl) { this.serverUrl = serverUrl; }
+
+    public User registerUser(User user) throws ResponseException
+    {
+        var path = "/user";
+        return this.makeRequest("POST", path, user, User.class);
+    }
+
+    public User login(User user) throws ResponseException
+    {
+        var path = "/session";
+        return this.makeRequest("POST", path, user, User.class);
+    }
+
+    public void logout(User user) throws ResponseException
+    {
+        var path = "/session";
+        this.makeRequest("DELETE", path, user, User.class);
+    }
+
+    public void clearData() throws ResponseException
+    {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null);
+    }
+
+    public ArrayList<GameData> listGames() throws ResponseException
+    {
+        var path = "/game";
+        record listGamesResponse(ArrayList<GameData> list) {}
+        var response = this.makeRequest("GET", path, null, listGamesResponse.class);
+        return response.list();
+    }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException
     {
