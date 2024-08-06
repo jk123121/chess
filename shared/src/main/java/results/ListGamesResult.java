@@ -25,4 +25,21 @@ public class ListGamesResult
     {
         setMessage(message);
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder str = new StringBuilder();
+
+        for (GameData game : games)
+        {
+            str.append("Game ID: " + game.getGameID() + "\n");
+            str.append("Game Name: " + game.getGameName() + "\n");
+            str.append("White Username: " + game.getWhiteUsername() + "\n");
+            str.append("Black Username: " + game.getBlackUsername() + "\n");
+            str.append("\n");
+        }
+
+        return str.toString();
+    }
 }
