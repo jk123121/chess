@@ -40,7 +40,7 @@ public class Server
             System.err.println("Specify the port number as a command line parameter");
         }
 
-        return 0;
+        return desiredPort;
     }
 
     public void stop()
