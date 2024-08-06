@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import model.GameData;
 import model.User;
+import results.LoginResult;
 import results.LogoutResult;
 import results.RegisterResult;
 
@@ -23,16 +24,17 @@ public class ServerFacade
         return this.makeRequest("POST", path, null, user, RegisterResult.class);
     }
 
-    public User login(User user) throws ResponseException
+    public LoginResult login(User user) throws ResponseException
     {
         var path = "/session";
-        return this.makeRequest("POST", path, null, user, User.class);
+        return this.makeRequest("POST", path, null, user, LoginResult.class);
     }
 
     public LogoutResult logout(String authtoken) throws ResponseException
     {
         var path = "/session";
-        return this.makeRequest("DELETE", path, authtoken, null, LogoutResult.class);
+        LogoutResult result = this.makeRequest("DELETE", path, authtoken, null, LogoutResult.class);
+        return result;
     }
 
     public void clearData() throws ResponseException
@@ -56,9 +58,9 @@ public class ServerFacade
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            //http.setRequestProperty();
             http.setDoOutput(true);
 
+            writeHeader(authtoken, http);
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
@@ -68,6 +70,15 @@ public class ServerFacade
             throw new ResponseException(500, ex.getMessage());
         }
     }
+
+    private static void writeHeader(String authtoken, HttpURLConnection http) throws IOException
+    {
+        if (authtoken != null)
+        {
+            http.setRequestProperty("authorization", authtoken);
+        }
+    }
+
     private static void writeBody(Object request, HttpURLConnection http) throws IOException
     {
         if (request != null)

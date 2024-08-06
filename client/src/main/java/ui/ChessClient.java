@@ -4,6 +4,7 @@ package ui;
 import exception.ResponseException;
 import facade.ServerFacade;
 import model.User;
+import results.LoginResult;
 import results.LogoutResult;
 import results.RegisterResult;
 import websocket.NotificationHandler;
@@ -41,7 +42,7 @@ public class ChessClient
                 {
                     case "login" -> login(parameters);
                     case "register" -> register(parameters);
-                    case "quit" -> "Successfully quit Chess.";
+                    case "quit" -> "quit";
                     default -> help();
                 };
             }
@@ -65,12 +66,24 @@ public class ChessClient
 
     public String login(String... params) throws ResponseException
     {
-        if (params.length == 2)
+        try
         {
-            String username = params[0];
-            String password = params[1];
+            if (params.length == 2)
+            {
+                String username = params[0];
+                String password = params[1];
+
+                LoginResult result = server.login(new User(username, password, null));
+                authtoken = result.getAuthToken();
+                state = State.SIGNEDIN;
+
+                return "Successfully logged in as: " + result.getUsername() + "\n" + help();
+            }
+        } catch (ResponseException e)
+        {
+            throw new ResponseException(400, "Wrong username or password. Try again");
         }
-        return "";
+        throw new ResponseException(400, "Expected: login <username> <password>");
     }
 
     public String register(String... params) throws ResponseException
@@ -103,9 +116,8 @@ public class ChessClient
         {
             if (params.length == 0)
             {
-                String authtoken = params[0];
-                LogoutResult result = server.logout(authtoken);
-                this.authtoken = null;
+                server.logout(authtoken);
+                authtoken = null;
                 state = State.SIGNEDOUT;
 
                 return "Successfully logged out!\n" + help();
