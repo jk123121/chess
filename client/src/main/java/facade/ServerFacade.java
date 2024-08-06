@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import model.GameData;
 import model.User;
-import results.LoginResult;
-import results.LogoutResult;
-import results.RegisterResult;
+import requests.CreateGameRequest;
+import results.*;
 
 import java.io.*;
 import java.net.*;
@@ -37,18 +36,22 @@ public class ServerFacade
         return result;
     }
 
+    public CreateGameResult createGame(String authtoken, CreateGameRequest req) throws ResponseException
+    {
+        var path = "/game";
+        return this.makeRequest("POST", path, authtoken, req, CreateGameResult.class);
+    }
+
     public void clearData() throws ResponseException
     {
         var path = "/db";
         this.makeRequest("DELETE", path, null, null, null);
     }
 
-    public ArrayList<GameData> listGames() throws ResponseException
+    public ListGamesResult listGames(String authtoken) throws ResponseException
     {
         var path = "/game";
-        record listGamesResponse(ArrayList<GameData> list) {}
-        var response = this.makeRequest("GET", path, null, null, listGamesResponse.class);
-        return response.list();
+        return this.makeRequest("GET", path, authtoken, null, ListGamesResult.class);
     }
 
     private <T> T makeRequest(String method, String path, String authtoken, Object request, Class<T> responseClass) throws ResponseException

@@ -3,10 +3,10 @@ package ui;
 
 import exception.ResponseException;
 import facade.ServerFacade;
+import model.GameData;
 import model.User;
-import results.LoginResult;
-import results.LogoutResult;
-import results.RegisterResult;
+import requests.CreateGameRequest;
+import results.*;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
 
@@ -122,7 +122,7 @@ public class ChessClient
 
                 return "Successfully logged out!\n" + help();
             }
-        } catch (Exception e)
+        } catch (ResponseException e)
         {
             throw new ResponseException(400, "Invalid Authtoken");
         }
@@ -131,12 +131,36 @@ public class ChessClient
 
     public String createGame(String... params) throws ResponseException
     {
-        return "";
+        try
+        {
+            if (params.length == 1)
+            {
+                CreateGameResult result = server.createGame(authtoken, new CreateGameRequest(params[0]));
+                int gameID = result.getGameID();
+
+                return "Successfully created game: " + gameID + "!\n" + help();
+            }
+        } catch (ResponseException e)
+        {
+            throw new ResponseException(400, "Invalid game name. Try again");
+        }
+        throw new ResponseException(400, "Expected: creategame <gamename>");
     }
 
     public String listGames(String... params) throws ResponseException
     {
-        return "";
+        try
+        {
+            if (params.length == 0)
+            {
+                ListGamesResult result = server.listGames(authtoken);
+                return result.toString();
+            }
+        } catch (ResponseException e)
+        {
+            throw new ResponseException(400, "Invalid game name. Try again");
+        }
+        throw new ResponseException(400, "Expected: creategame <gamename>");
     }
 
     public String playGame(String... params) throws ResponseException
@@ -153,6 +177,8 @@ public class ChessClient
         if (state == State.SIGNEDOUT)
         {
             return """
+                    
+                    Options:
                     - Login <username> <password>
                     - Register <username> <password> <email>
                     - Help
@@ -162,9 +188,11 @@ public class ChessClient
                     """;
         }
         return """
-                - CreateGame
+                
+                Options:
+                - CreateGame <game name>
                 - ListGames
-                - PlayGame
+                - PlayGame <gameID> <desired color>
                 - ObserveGame
                 - Logout
                 - Help
