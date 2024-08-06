@@ -18,7 +18,7 @@ public class Repl implements NotificationHandler
 
     public void run()
     {
-        System.out.println(SET_TEXT_COLOR_BLUE + "Welcome to Chess! Sign in to start.");
+        System.out.println(SET_TEXT_COLOR_BLUE + "Welcome to Chess! Sign in or register to start.");
         System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
@@ -28,7 +28,18 @@ public class Repl implements NotificationHandler
         {
             printPrompt();
             String line = scanner.nextLine();
+
+            try
+            {
+                result = client.eval(line);
+                System.out.print(result);
+            } catch (Throwable e)
+            {
+                var msg = e.toString();
+                System.out.print(msg);
+            }
         }
+        System.out.println();
     }
 
     @Override
@@ -40,6 +51,6 @@ public class Repl implements NotificationHandler
 
     private void printPrompt()
     {
-        System.out.print("\n" + ">>> " + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n [" + client.getState() + "] >>> ");
     }
 }

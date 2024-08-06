@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import model.GameData;
 import model.User;
+import results.LogoutResult;
+import results.RegisterResult;
 
 import java.io.*;
 import java.net.*;
@@ -15,39 +17,39 @@ public class ServerFacade
 
     public ServerFacade(String serverUrl) { this.serverUrl = serverUrl; }
 
-    public User registerUser(User user) throws ResponseException
+    public RegisterResult registerUser(User user) throws ResponseException
     {
         var path = "/user";
-        return this.makeRequest("POST", path, user, User.class);
+        return this.makeRequest("POST", path, null, user, RegisterResult.class);
     }
 
     public User login(User user) throws ResponseException
     {
         var path = "/session";
-        return this.makeRequest("POST", path, user, User.class);
+        return this.makeRequest("POST", path, null, user, User.class);
     }
 
-    public void logout(User user) throws ResponseException
+    public LogoutResult logout(User user) throws ResponseException
     {
         var path = "/session";
-        this.makeRequest("DELETE", path, user, User.class);
+        return this.makeRequest("DELETE", path, null, user, LogoutResult.class);
     }
 
     public void clearData() throws ResponseException
     {
         var path = "/db";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, null, null, null);
     }
 
     public ArrayList<GameData> listGames() throws ResponseException
     {
         var path = "/game";
         record listGamesResponse(ArrayList<GameData> list) {}
-        var response = this.makeRequest("GET", path, null, listGamesResponse.class);
+        var response = this.makeRequest("GET", path, null, null, listGamesResponse.class);
         return response.list();
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException
+    private <T> T makeRequest(String method, String path, String authtoken, Object request, Class<T> responseClass) throws ResponseException
     {
         try
         {
