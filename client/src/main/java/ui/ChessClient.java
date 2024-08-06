@@ -6,6 +6,7 @@ import facade.ServerFacade;
 import model.GameData;
 import model.User;
 import requests.CreateGameRequest;
+import requests.JoinGameRequest;
 import results.*;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
@@ -165,7 +166,20 @@ public class ChessClient
 
     public String playGame(String... params) throws ResponseException
     {
-        return "";
+        //Update: currently saying game is joined succesfully, but database is not updated with username
+        try
+        {
+            if (params.length == 2)
+            {
+                String desiredColor = params[1].toUpperCase();
+                JoinGameResult result = server.playGame(authtoken, new JoinGameRequest(desiredColor, Integer.parseInt(params[0])));
+                return "Successfully joined game: " + Integer.parseInt(params[0]) + "!\n" + help();
+            }
+        } catch (ResponseException e)
+        {
+            throw new ResponseException(400, "Invalid game ID or color. Try again");
+        }
+        throw new ResponseException(400, "Expected: playgame <gameID> <desired color>");
     }
 
     public String observeGame(String... params) throws ResponseException
