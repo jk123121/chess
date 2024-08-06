@@ -4,6 +4,7 @@ package ui;
 import exception.ResponseException;
 import facade.ServerFacade;
 import model.User;
+import results.LogoutResult;
 import results.RegisterResult;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
@@ -34,13 +35,28 @@ public class ChessClient
             String command = (tokens.length > 0) ? tokens[0] : "help";
             String[] parameters = Arrays.copyOfRange(tokens, 1, tokens.length);
 
-            return switch (command)
+            if (state.equals(State.SIGNEDOUT))
             {
-                case "login" -> login(parameters);
-                case "register" -> register(parameters);
-                case "quit" -> "quit";
-                default -> help();
-            };
+                return switch (command)
+                {
+                    case "login" -> login(parameters);
+                    case "register" -> register(parameters);
+                    case "quit" -> "Successfully quit Chess.";
+                    default -> help();
+                };
+            }
+            else
+            {
+                return switch (command)
+                {
+                    case "creategame" -> createGame(parameters);
+                    case "listgames" -> listGames(parameters);
+                    case "playgame" -> playGame(parameters);
+                    case "observegame" -> observeGame(parameters);
+                    case "logout" -> logout(parameters);
+                    default -> help();
+                };
+            }
         } catch (ResponseException e)
         {
             throw new RuntimeException(e);
@@ -85,11 +101,40 @@ public class ChessClient
     {
         try
         {
-            return "";
+            if (params.length == 0)
+            {
+                String authtoken = params[0];
+                LogoutResult result = server.logout(authtoken);
+                this.authtoken = null;
+                state = State.SIGNEDOUT;
+
+                return "Successfully logged out!\n" + help();
+            }
         } catch (Exception e)
         {
-            throw new RuntimeException(e);
+            throw new ResponseException(400, "Invalid Authtoken");
         }
+        throw new ResponseException(400, "Expected: logout");
+    }
+
+    public String createGame(String... params) throws ResponseException
+    {
+        return "";
+    }
+
+    public String listGames(String... params) throws ResponseException
+    {
+        return "";
+    }
+
+    public String playGame(String... params) throws ResponseException
+    {
+        return "";
+    }
+
+    public String observeGame(String... params) throws ResponseException
+    {
+        return "";
     }
 
     public String help() {
@@ -106,7 +151,7 @@ public class ChessClient
         }
         return """
                 - CreateGame
-                - ListGame
+                - ListGames
                 - PlayGame
                 - ObserveGame
                 - Logout

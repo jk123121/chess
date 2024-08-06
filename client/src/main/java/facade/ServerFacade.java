@@ -29,10 +29,10 @@ public class ServerFacade
         return this.makeRequest("POST", path, null, user, User.class);
     }
 
-    public LogoutResult logout(User user) throws ResponseException
+    public LogoutResult logout(String authtoken) throws ResponseException
     {
         var path = "/session";
-        return this.makeRequest("DELETE", path, null, user, LogoutResult.class);
+        return this.makeRequest("DELETE", path, authtoken, null, LogoutResult.class);
     }
 
     public void clearData() throws ResponseException
@@ -56,6 +56,7 @@ public class ServerFacade
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
+            //http.setRequestProperty();
             http.setDoOutput(true);
 
             writeBody(request, http);
