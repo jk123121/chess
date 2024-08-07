@@ -1,6 +1,8 @@
 package ui;
 
 
+import chess.ChessBoard;
+import chess.ChessPiece;
 import exception.ResponseException;
 import facade.ServerFacade;
 import model.GameData;
@@ -11,7 +13,10 @@ import results.*;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import static ui.EscapeSequences.*;
 
 public class ChessClient
 {
@@ -20,6 +25,7 @@ public class ChessClient
     private final String serverUrl;
     private final NotificationHandler notificationHandler;
     private String authtoken;
+    private ArrayList<GameData> games = new ArrayList<>();
     //private WebSocketFacade ws;
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler)
@@ -139,6 +145,10 @@ public class ChessClient
                 CreateGameResult result = server.createGame(authtoken, new CreateGameRequest(params[0]));
                 int gameID = result.getGameID();
 
+                //Delete previous list of games and add all games
+                games.clear();
+                games.addAll(server.listGames(authtoken).getGames());
+
                 return "Successfully created game: " + gameID + "!\n" + help();
             }
         } catch (ResponseException e)
@@ -155,7 +165,26 @@ public class ChessClient
             if (params.length == 0)
             {
                 ListGamesResult result = server.listGames(authtoken);
-                return result.toString() + help();
+
+                //Delete previous list of games and add all games
+                games.clear();
+                games.addAll(server.listGames(authtoken).getGames());
+
+                //Build string for list
+                StringBuilder str = new StringBuilder();
+
+                int i = 1;
+                for (GameData game : games)
+                {
+                    str.append("Game ID: " + i + "\n");
+                    str.append("Game Name: " + game.getGameName() + "\n");
+                    str.append("White Username: " + game.getWhiteUsername() + "\n");
+                    str.append("Black Username: " + game.getBlackUsername() + "\n");
+                    str.append("\n");
+                    i++;
+                }
+
+                return str.toString() + help();
             }
         } catch (ResponseException e)
         {
@@ -171,8 +200,10 @@ public class ChessClient
             if (params.length == 2)
             {
                 String desiredColor = params[1].toUpperCase();
-                JoinGameResult result = server.playGame(authtoken, new JoinGameRequest(desiredColor, Integer.parseInt(params[0])));
-                return "Successfully joined game: " + Integer.parseInt(params[0]) + "!\n" + help();
+                int gameID = games.get(Integer.parseInt(params[0])-1).getGameID();
+                JoinGameResult result = server.playGame(authtoken, new JoinGameRequest(desiredColor, gameID));
+
+                return "Successfully joined game: " + Integer.parseInt(params[0]) + "!\n" + help() + "\n" + drawWhiteBoard(gameID) + "\n" + drawBlackBoard(gameID);
             }
         } catch (ResponseException e)
         {
@@ -182,8 +213,221 @@ public class ChessClient
     }
 
     public String observeGame(String... params) throws ResponseException
+    {/*
+        try
+        {
+            if (params.length == 1)
+            {
+                int gameID = games.get(Integer.parseInt(params[0])-1).getGameID();
+
+                return "Successfully observing game: " + gameID + "!\n" + help() + "\n" + drawWhiteBoard(gameID) + "\n" + drawBlackBoard(gameID);
+            }
+        } catch ()
+        {
+            throw new ResponseException(400, "Invalid game ID. Try again");
+        }
+        throw new ResponseException(400, "Expected: observegame <gameID>");
+        */ return "";
+    }
+
+    public String drawWhiteBoard(int gameID)
     {
-        return "";
+        ArrayList<ArrayList<ChessPiece>> board = null;
+        for (GameData game : games)
+        {
+            if (game.getGameID() == gameID)
+            {
+                board = game.getGame().getBoard().getChessArray();
+            }
+        }
+
+        //Draw Board
+        StringBuilder whiteBoard = new StringBuilder();
+        whiteBoard.append("White board:\n");
+        whiteBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n");
+
+        boolean isWhiteBg = true;
+        for (int i = 7; i >= 0; i--)
+        {
+            whiteBoard.append(SET_BG_COLOR_BLACK + " " + (i+1) + " ");
+            for (int j = 0; j < 8; j++)
+            {
+                //Alternate BG Colors
+                if (isWhiteBg)
+                {
+                    whiteBoard.append(SET_BG_COLOR_LIGHT_GREY);
+                }
+                else
+                {
+                    whiteBoard.append(SET_BG_COLOR_DARK_GREY);
+                }
+
+                if (board.get(i).get(j) == null)
+                {
+                    whiteBoard.append("   ");
+                }
+                else
+                {
+                    switch (board.get(i).get(j).getTeamColor())
+                    {
+                        case WHITE:
+                            whiteBoard.append(SET_TEXT_COLOR_WHITE);
+                            switch(board.get(i).get(j).getPieceType())
+                            {
+                                case PAWN:
+                                    whiteBoard.append(" P ");
+                                    break;
+                                case ROOK:
+                                    whiteBoard.append(" R ");
+                                    break;
+                                case KNIGHT:
+                                    whiteBoard.append(" N ");
+                                    break;
+                                case BISHOP:
+                                    whiteBoard.append(" B ");
+                                    break;
+                                case QUEEN:
+                                    whiteBoard.append(" Q ");
+                                    break;
+                                case KING:
+                                    whiteBoard.append(" K ");
+                                    break;
+                            }
+                            break;
+                        case BLACK:
+                            whiteBoard.append(SET_TEXT_COLOR_BLACK);
+                            switch(board.get(i).get(j).getPieceType())
+                            {
+                                case PAWN:
+                                    whiteBoard.append(" p ");
+                                    break;
+                                case ROOK:
+                                    whiteBoard.append(" r ");
+                                    break;
+                                case KNIGHT:
+                                    whiteBoard.append(" n ");
+                                    break;
+                                case BISHOP:
+                                    whiteBoard.append(" b ");
+                                    break;
+                                case QUEEN:
+                                    whiteBoard.append(" q ");
+                                    break;
+                                case KING:
+                                    whiteBoard.append(" k ");
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                isWhiteBg = !isWhiteBg;
+            }
+            isWhiteBg = !isWhiteBg;
+            whiteBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + " " + (i+1) + " " + RESET_BG_COLOR + "\n");
+        }
+        whiteBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n" + RESET_TEXT_COLOR);
+
+        return whiteBoard.toString();
+    }
+
+    public String drawBlackBoard(int gameID)
+    {
+        ArrayList<ArrayList<ChessPiece>> board = null;
+        for (GameData game : games)
+        {
+            if (game.getGameID() == gameID)
+            {
+                board = game.getGame().getBoard().getChessArray();
+            }
+        }
+
+        //Draw Board
+        StringBuilder blackBoard = new StringBuilder();
+        blackBoard.append("Black board:\n");
+        blackBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n");
+
+        boolean isWhiteBg = true;
+        for (int i = 0; i < 8; i++)
+        {
+            blackBoard.append(SET_BG_COLOR_BLACK + " " + (i+1) + " ");
+            for (int j = 7; j >= 0; j--)
+            {
+                //Alternate BG Colors
+                if (isWhiteBg)
+                {
+                    blackBoard.append(SET_BG_COLOR_LIGHT_GREY);
+                }
+                else
+                {
+                    blackBoard.append(SET_BG_COLOR_DARK_GREY);
+                }
+
+                if (board.get(i).get(j) == null)
+                {
+                    blackBoard.append("   ");
+                }
+                else
+                {
+                    switch (board.get(i).get(j).getTeamColor())
+                    {
+                        case WHITE:
+                            blackBoard.append(SET_TEXT_COLOR_WHITE);
+                            switch(board.get(i).get(j).getPieceType())
+                            {
+                                case PAWN:
+                                    blackBoard.append(" P ");
+                                    break;
+                                case ROOK:
+                                    blackBoard.append(" R ");
+                                    break;
+                                case KNIGHT:
+                                    blackBoard.append(" N ");
+                                    break;
+                                case BISHOP:
+                                    blackBoard.append(" B ");
+                                    break;
+                                case QUEEN:
+                                    blackBoard.append(" Q ");
+                                    break;
+                                case KING:
+                                    blackBoard.append(" K ");
+                                    break;
+                            }
+                            break;
+                        case BLACK:
+                            blackBoard.append(SET_TEXT_COLOR_BLACK);
+                            switch(board.get(i).get(j).getPieceType())
+                            {
+                                case PAWN:
+                                    blackBoard.append(" p ");
+                                    break;
+                                case ROOK:
+                                    blackBoard.append(" r ");
+                                    break;
+                                case KNIGHT:
+                                    blackBoard.append(" n ");
+                                    break;
+                                case BISHOP:
+                                    blackBoard.append(" b ");
+                                    break;
+                                case QUEEN:
+                                    blackBoard.append(" q ");
+                                    break;
+                                case KING:
+                                    blackBoard.append(" k ");
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                isWhiteBg = !isWhiteBg;
+            }
+            isWhiteBg = !isWhiteBg;
+            blackBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + " " + (i+1) + " " + RESET_BG_COLOR + "\n");
+        }
+        blackBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n" + RESET_TEXT_COLOR);
+
+        return blackBoard.toString();
     }
 
     public String help() {
@@ -206,7 +450,7 @@ public class ChessClient
                 - CreateGame <game name>
                 - ListGames
                 - PlayGame <gameID> <desired color>
-                - ObserveGame
+                - ObserveGame <gameID>
                 - Logout
                 - Help
                 """;
