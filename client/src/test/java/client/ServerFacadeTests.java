@@ -1,18 +1,33 @@
 package client;
 
+import exception.ResponseException;
+import facade.ServerFacade;
+import model.User;
 import org.junit.jupiter.api.*;
+import results.RegisterResult;
 import server.Server;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
+    static ServerFacade facade;
 
     @BeforeAll
-    public static void init() {
+    public static void init()
+    {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
+        facade = new ServerFacade("http://localhost:" + port);
+    }
+
+    @BeforeEach
+    public void reset() throws ResponseException
+    {
+        facade.clearDatabase();
     }
 
     @AfterAll
@@ -22,8 +37,56 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    void positiveRegister() throws Exception
+    {
+        var authData = facade.registerUser(new User("player1", "password", "p1@email.com"));
+        assertTrue(authData.getAuthToken().length() > 0);
+    }
+
+    @Test
+    void negativeRegister() throws Exception
+    {
+        RegisterResult authData = null;
+        RegisterResult authData2 = null;
+        try
+        {
+            authData = facade.registerUser(new User("player1", "password", "p1@email.com"));
+            authData2 = facade.registerUser(new User("player1", "password", "p1@email.com"));
+            assertTrue(false);
+        } catch (ResponseException e)
+        {
+            assertNull(authData2);
+        }
+    }
+
+    @Test
+    void login() throws Exception
+    {
+
+    }
+
+    @Test
+    void logout() throws Exception
+    {
+
+    }
+
+    @Test
+    void createGame() throws Exception
+    {
+
+    }
+
+    @Test
+    void listGames() throws Exception
+    {
+
+    }
+
+    @Test
+    void playGame() throws Exception
+    {
+
     }
 
 }
