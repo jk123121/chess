@@ -4,6 +4,7 @@ import exception.ResponseException;
 import facade.ServerFacade;
 import model.User;
 import org.junit.jupiter.api.*;
+import results.LoginResult;
 import results.RegisterResult;
 import server.Server;
 
@@ -60,9 +61,26 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void login() throws Exception
+    void positiveLogin() throws Exception
     {
+        facade.registerUser(new User("player1", "password", "p1@email.com"));
+        LoginResult result = facade.login(new User("player1", "password", null));
+        assertTrue(result.getAuthToken().length() > 0);
+    }
 
+    @Test
+    void negativeLogin() throws Exception
+    {
+        facade.registerUser(new User("player1", "password", "p1@email.com"));
+        LoginResult result = null;
+        try
+        {
+            result = facade.login(new User("player1", "wrongpassword", null));
+            assertTrue(false);
+        } catch (ResponseException e)
+        {
+            assertNull(result);
+        }
     }
 
     @Test
