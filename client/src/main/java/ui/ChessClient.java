@@ -213,21 +213,19 @@ public class ChessClient
     }
 
     public String observeGame(String... params) throws ResponseException
-    {/*
+    {
         try
         {
             if (params.length == 1)
             {
                 int gameID = games.get(Integer.parseInt(params[0])-1).getGameID();
-
                 return "Successfully observing game: " + gameID + "!\n" + help() + "\n" + drawWhiteBoard(gameID) + "\n" + drawBlackBoard(gameID);
             }
-        } catch ()
+        } catch (NumberFormatException e)
         {
             throw new ResponseException(400, "Invalid game ID. Try again");
         }
         throw new ResponseException(400, "Expected: observegame <gameID>");
-        */ return "";
     }
 
     public String drawWhiteBoard(int gameID)
@@ -243,7 +241,7 @@ public class ChessClient
 
         //Draw Board
         StringBuilder whiteBoard = new StringBuilder();
-        whiteBoard.append("White board:\n");
+        whiteBoard.append(SET_TEXT_COLOR_WHITE + "White board:\n");
         whiteBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR + "\n");
 
         boolean isWhiteBg = true;
@@ -343,7 +341,7 @@ public class ChessClient
 
         //Draw Board
         StringBuilder blackBoard = new StringBuilder();
-        blackBoard.append("Black board:\n");
+        blackBoard.append(SET_TEXT_COLOR_WHITE + "Black board:\n");
         blackBoard.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_WHITE + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR + "\n");
 
         boolean isWhiteBg = true;
