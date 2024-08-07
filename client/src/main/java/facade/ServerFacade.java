@@ -55,6 +55,12 @@ public class ServerFacade
         return this.makeRequest("PUT", path, authtoken, req, JoinGameResult.class);
     }
 
+    public ClearResult clearDatabase() throws ResponseException
+    {
+        var path = "/db";
+        return this.makeRequest("DELETE", path, null, null, ClearResult.class);
+    }
+
     private <T> T makeRequest(String method, String path, String authtoken, Object request, Class<T> responseClass) throws ResponseException
     {
         try
