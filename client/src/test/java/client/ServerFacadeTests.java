@@ -5,6 +5,7 @@ import facade.ServerFacade;
 import model.User;
 import org.junit.jupiter.api.*;
 import requests.CreateGameRequest;
+import requests.JoinGameRequest;
 import results.*;
 import server.Server;
 
@@ -165,8 +166,34 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void playGame() throws Exception
+    void positivePlayGame() throws Exception
     {
+        var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+        String authtoken = registerResult.getAuthToken();
+        var createdGame = facade.createGame(authtoken, new CreateGameRequest("TestGame"));
+        int gameID = createdGame.getGameID();
+        facade.listGames(authtoken);
+        var result = facade.playGame(authtoken, new JoinGameRequest("WHITE", gameID));
+        assertNotNull(result);
+    }
+
+    @Test
+    void negativePlayGame() throws Exception
+    {
+        JoinGameResult result = null;
+        try
+        {
+            var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+            String authtoken = "wrongauthtoken";
+            var createdGame = facade.createGame(authtoken, new CreateGameRequest("TestGame"));
+            int gameID = createdGame.getGameID();
+            facade.listGames(authtoken);
+            result = facade.playGame(authtoken, new JoinGameRequest("WHITE", gameID));
+            assertTrue(false);
+        } catch (ResponseException e)
+        {
+            assertNull(result);
+        }
 
     }
 
