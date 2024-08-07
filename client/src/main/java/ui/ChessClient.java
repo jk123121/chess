@@ -155,7 +155,7 @@ public class ChessClient
             if (params.length == 0)
             {
                 ListGamesResult result = server.listGames(authtoken);
-                return result.toString();
+                return result.toString() + help();
             }
         } catch (ResponseException e)
         {
@@ -166,7 +166,6 @@ public class ChessClient
 
     public String playGame(String... params) throws ResponseException
     {
-        //Update: currently saying game is joined succesfully, but database is not updated with username
         try
         {
             if (params.length == 2)
