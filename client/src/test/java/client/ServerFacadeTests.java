@@ -4,8 +4,8 @@ import exception.ResponseException;
 import facade.ServerFacade;
 import model.User;
 import org.junit.jupiter.api.*;
-import results.LoginResult;
-import results.RegisterResult;
+import requests.CreateGameRequest;
+import results.*;
 import server.Server;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,20 +84,83 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void logout() throws Exception
+    void positiveLogout() throws Exception
     {
+        var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+        String authtoken = registerResult.getAuthToken();
+        LogoutResult result = facade.logout(authtoken);
+        assertNotNull(result);
+    }
+
+    @Test
+    void negativeLogout() throws Exception
+    {
+        LogoutResult result = null;
+        try
+        {
+            var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+            String authtoken = "wrongAuthtoken";
+            result = facade.logout(authtoken);
+            assertTrue(false);
+        } catch (ResponseException e)
+        {
+            assertNull(result);
+        }
+    }
+
+    @Test
+    void positiveCreateGame() throws Exception
+    {
+        var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+        String authtoken = registerResult.getAuthToken();
+        var createGameResult = facade.createGame(authtoken, new CreateGameRequest("TestGame"));
+        int gameID = createGameResult.getGameID();
+        assertNotNull(gameID);
+    }
+
+    @Test
+    void negativeCreateGame() throws Exception
+    {
+        CreateGameResult result = null;
+        try
+        {
+            var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+            String authtoken = "wrongauthtoken";
+            result = facade.createGame(authtoken, new CreateGameRequest("TestGame"));
+            int gameID = result.getGameID();
+            assertTrue(false);
+        } catch (ResponseException e)
+        {
+            assertNull(result);
+        }
 
     }
 
     @Test
-    void createGame() throws Exception
+    void positiveListGames() throws Exception
     {
-
+        var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+        String authtoken = registerResult.getAuthToken();
+        facade.createGame(authtoken, new CreateGameRequest("TestGame"));
+        ListGamesResult result = facade.listGames(authtoken);
+        assertNotNull(result.getGames());
     }
 
     @Test
-    void listGames() throws Exception
+    void negativeListGames() throws Exception
     {
+        ListGamesResult result = null;
+        try
+        {
+            var registerResult = facade.registerUser(new User("player1", "password", "p1@email.com"));
+            String authtoken = "wrongauthtoken";
+            facade.createGame(authtoken, new CreateGameRequest("TestGame"));
+            result = facade.listGames(authtoken);
+            assertTrue(false);
+        } catch (ResponseException e)
+        {
+            assertNull(result);
+        }
 
     }
 
