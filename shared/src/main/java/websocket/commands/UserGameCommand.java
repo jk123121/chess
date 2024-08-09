@@ -41,6 +41,11 @@ public class UserGameCommand {
         return gameID;
     }
 
+    public String getAuthString()
+    {
+        return getAuthToken().toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
