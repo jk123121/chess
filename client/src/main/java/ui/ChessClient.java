@@ -28,7 +28,7 @@ public class ChessClient
     private ArrayList<GameData> games = new ArrayList<>();
     private boolean hasJoinedGame = false;
     private int joinedGameID = -1;
-    //private WebSocketFacade ws;
+    private WebSocketFacade ws;
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler)
     {

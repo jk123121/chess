@@ -7,8 +7,8 @@ import websocket.Notification;
 
 import javax.websocket.*;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.net.*;
 
 public class WebSocketFacade extends Endpoint {
 
@@ -39,6 +39,22 @@ public class WebSocketFacade extends Endpoint {
         } catch (DeploymentException | IOException | URISyntaxException ex)
         {
             throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public static void get(String msg) throws IOException
+    {
+        var url = new URL("http://localhost:8080/echo/" + msg);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setDoOutput(true);
+        conn.connect();
+
+        try (InputStream respBody = conn.getInputStream())
+        {
+            byte[] bytes = new byte[respBody.available()];
+            respBody.read(bytes);
+            System.out.println(new String(bytes));
         }
     }
 
