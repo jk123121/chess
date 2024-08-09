@@ -26,6 +26,8 @@ public class ChessClient
     private final NotificationHandler notificationHandler;
     private String authtoken;
     private ArrayList<GameData> games = new ArrayList<>();
+    private boolean hasJoinedGame = false;
+    private int joinedGameID = -1;
     //private WebSocketFacade ws;
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler)
@@ -53,7 +55,7 @@ public class ChessClient
                     default -> help();
                 };
             }
-            else
+            else if (state.equals(State.SIGNEDIN) && !hasJoinedGame)
             {
                 return switch (command)
                 {
@@ -63,6 +65,20 @@ public class ChessClient
                     case "observegame" -> observeGame(parameters);
                     case "logout" -> logout(parameters);
                     default -> help();
+                };
+            }
+            else
+            {
+                return switch (command)
+                {
+                    case "connect" -> "";
+                    case "makemove" -> "";
+                    case "leave" -> "";
+                    case "resign" -> "";
+                    case "highlightmoves" -> "";
+                    case "help" -> help();
+                    case "refresh" -> "";
+                    default -> "";
                 };
             }
         } catch (ResponseException e)
@@ -442,7 +458,9 @@ public class ChessClient
                     Type the command (such as "login") followed by required fields (if indicated)
                     """;
         }
-        return """
+        else if (state == State.SIGNEDIN && !hasJoinedGame)
+        {
+            return """
                 
                 Options:
                 - CreateGame <game name>
@@ -451,6 +469,18 @@ public class ChessClient
                 - ObserveGame <gameID>
                 - Logout
                 - Help
+                """;
+        }
+        return """
+                
+                Options:
+                - Connect
+                - MakeMove <letter><number> <letter><number>
+                - HighlightMoves <letter><number>
+                - Resign
+                - Leave
+                - Help
+                - Refresh
                 """;
     }
 
