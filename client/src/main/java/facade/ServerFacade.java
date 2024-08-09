@@ -7,6 +7,7 @@ import model.User;
 import requests.CreateGameRequest;
 import requests.JoinGameRequest;
 import results.*;
+import websocket.WebSocketFacade;
 
 import java.io.*;
 import java.net.*;
@@ -16,7 +17,10 @@ public class ServerFacade
 {
     private final String serverUrl;
 
-    public ServerFacade(String serverUrl) { this.serverUrl = serverUrl; }
+    public ServerFacade(String serverUrl)
+    {
+        this.serverUrl = serverUrl;
+    }
 
     public RegisterResult registerUser(User user) throws ResponseException
     {
